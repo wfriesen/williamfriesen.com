@@ -112,7 +112,7 @@ CREATE VIEW age_differences AS
     p.op;
 ```
 
-This is the point where I had a strange feeling. I actually missed Oracle. With no support for analytic functions in SQLite, this query required some strange joins and grouping in the `current_and_future_leaders` and `successions` views. Using Oracle's `LAG` or `LEAD` functions would have been much nicer, but being able to run this query in a browser is a worthwhile trade.
+This is the point where I had a strange feeling. I actually missed Oracle. With no support for analytic functions in SQLite, this query required some strange joins and grouping in the `current_and_future_leaders` and `successions` views. Using Oracle's `LAG` or `LEAD` functions would have been much nicer, but being able to run this query wherever SQLite is supported is a worthwhile trade.
 
 Now, let's run some simple queries and see what we can see.
 

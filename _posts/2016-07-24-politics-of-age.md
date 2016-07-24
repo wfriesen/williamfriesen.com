@@ -9,7 +9,7 @@ This coming US election will prove historic for many reasons, not least of which
 
 <!--more-->
 
-This could be determined by a quick Googling, but since I primarily develop against an Oracle database in my day job, I see this nail as begging for the SQL hammer. Doing this in a full Oracle install is a bit of overkill, though, so I went with SQLite for this task. You can all play along at home in [SQL Fiddle](http://sqlfiddle.com).
+This could be determined by a quick Googling, but since I primarily develop against an Oracle database in my day job, I see this nail as begging for the SQL hammer. Doing this in a full Oracle install is a bit of overkill, though, so I went with SQLite for this task. You can all play along at home in [SQL Fiddle](http://sqlfiddle.com), or you could just skip ahead to the [pretty pictures](#charts) at the end of this post.
 
 So, let's start by creating a table to hold our data.
 
@@ -168,7 +168,8 @@ And this for incoming Democrats.
 |         2009 |          Barack Obama |          -7.03 |
 
 <br/>
-Notwithstanding a few outliers, the older-Republican/younger-Democrat theory seems to hold true. There's only one thing left to do, and that's head back into LibreOffice to make some pretty pictures.
+Notwithstanding a few outliers, the older-Republican/younger-Democrat theory mostly seems to hold true, particularly in more recent times. This is shown more starkly in the below charts.
 
+<a name="charts"/>
 ![Democrats Succeeding Republicans]({{ site.url }}/assets/politics-of-age/d_after_r.svg)
 ![Republicans Succeeding Democrats]({{ site.url }}/assets/politics-of-age/r_after_d.svg)

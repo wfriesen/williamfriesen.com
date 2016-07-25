@@ -76,7 +76,7 @@ Since we'll be querying twice (once for Democrats succeeding Republicans, and on
 
 ```sql
 CREATE VIEW age_differences AS
-  WITH current_and_future_leaders AS (
+  WITH once_and_future_leaders AS (
     SELECT
       p.op
     , MIN(p2.op) succeeded_by
@@ -87,34 +87,52 @@ CREATE VIEW age_differences AS
     GROUP BY
       p.op
   )
-  , successions AS (
+  , party_changes AS (
     SELECT
-      MIN(op) op
+      MAX(op) op
     , succeeded_by
-    FROM current_and_future_leaders
+    FROM once_and_future_leaders
     GROUP BY
       succeeded_by
   )
   SELECT
-    p.op
-  , p.name
-  , p.party
-  , p2.inauguration
+    p2.inauguration
   , p2.name new_president
-  , p2.party new_party
   , ROUND(p2.age_at_inauguration - p.age_at_inauguration, 2) age_difference
-  FROM successions s
+  , p2.op
+  , p.party
+  , p2.party new_party
+  FROM party_changes pc
   JOIN presage p
-    ON p.op = s.op
+    ON p.op = pc.op
   JOIN presage p2
-    ON p2.op = s.succeeded_by
-  ORDER BY
-    p.op;
+    ON p2.op = pc.succeeded_by
 ```
 
-This is the point where I had a strange feeling. I actually missed Oracle. With no support for analytic functions in SQLite, this query required some strange joins and grouping in the `current_and_future_leaders` and `successions` views. Using Oracle's `LAG` or `LEAD` functions would have been much nicer, but being able to run this query wherever SQLite is supported is a worthwhile trade.
+At this point I actually missed Oracle. With no support for analytic functions in SQLite, this query required some convoluted joins and grouping in the `once_and_future_leaders` and `successions` views. Using Oracle's `LAG` or `LEAD` functions would have let us write a much simpler query:
 
-Now, let's run some simple queries and see what we can see.
+```sql
+WITH once_and_future_leaders AS (
+  SELECT
+    p.op
+  , LEAD(p.op, 1, NULL) OVER (ORDER BY p.op) next_op
+  FROM presage p
+)
+, successions AS (
+  SELECT
+    p.op
+  , p2.op succeeded_by
+  FROM once_and_future_leaders oafl
+  JOIN presage p
+    ON p.op = oafl.op
+  JOIN presage p2
+    ON p2.op = oafl.next_op
+  WHERE p.party != p2.party
+)
+...
+```
+
+Anyway, enough jibber jabber, let's run some queries and see what we can see.
 
 ```sql
 SELECT
@@ -142,13 +160,13 @@ This gives us the following results for newly elected Republicans.
 
 | inauguration |        new_president | age_difference |
 |--------------|----------------------|----------------|
-|         1861 |      Abraham Lincoln |            4.1 |
+|         1861 |      Abraham Lincoln |         -13.11 |
 |         1869 |     Ulysses S. Grant |           -9.8 |
 |         1889 |    Benjamin Harrison |           7.84 |
 |         1897 |     William McKinley |          -1.01 |
 |         1921 |    Warren G. Harding |          -1.54 |
-|         1953 | Dwight D. Eisenhower |          11.65 |
-|         1969 |        Richard Nixon |          12.87 |
+|         1953 | Dwight D. Eisenhower |           2.64 |
+|         1969 |        Richard Nixon |           0.24 |
 |         1981 |        Ronald Reagan |          17.24 |
 |         2001 |       George W. Bush |           8.04 |
 
@@ -158,18 +176,36 @@ And this for incoming Democrats.
 | inauguration |         new_president | age_difference |
 |--------------|-----------------------|----------------|
 |         1865 |        Andrew Johnson |           3.91 |
-|         1885 |      Grover Cleveland |           1.04 |
+|         1885 |      Grover Cleveland |             -4 |
 |         1893 |      Grover Cleveland |           0.16 |
-|         1913 |        Woodrow Wilson |           2.32 |
-|         1933 | Franklin D. Roosevelt |          -3.79 |
+|         1913 |        Woodrow Wilson |           5.49 |
+|         1933 | Franklin D. Roosevelt |          -2.88 |
 |         1961 |       John F. Kennedy |         -19.74 |
-|         1977 |          Jimmy Carter |             -4 |
-|         1993 |          Bill Clinton |         -23.19 |
+|         1977 |          Jimmy Carter |          -9.15 |
+|         1993 |          Bill Clinton |         -18.07 |
 |         2009 |          Barack Obama |          -7.03 |
 
 <br/>
-Notwithstanding a few outliers, the older-Republican/younger-Democrat theory mostly seems to hold true, particularly in more recent times. This is shown more starkly in the below charts.
+This does seem to indicate a trend towards older-Republicans/younger-Democrats, particularly in more recent times.
 
 <a name="charts"/>
-![Democrats Succeeding Republicans]({{ site.url }}/assets/politics-of-age/d_after_r.svg)
 ![Republicans Succeeding Democrats]({{ site.url }}/assets/politics-of-age/r_after_d.svg)
+![Democrats Succeeding Republicans]({{ site.url }}/assets/politics-of-age/d_after_r.svg)
+
+But what about this coming election? Since I'm only looking at party switches, the Democratic chart will remain the same no matter what the outcome. So let's look at the effect a potential Trump presidency would have.
+
+```sql
+INSERT INTO presage (
+  op
+, name
+, inauguration
+, age_at_inauguration
+, party
+)
+VALUES
+  (45, 'Donald Trump', 2017, 70.220, 'R')
+```
+
+![Republicans (and Trump) Succeeding Democrats]({{ site.url }}/assets/politics-of-age/r_after_d_trump.svg)
+
+At 70 years, 220 days old, Donald Trump would not only be the oldest incoming US president (besting Reagan by over 6 months), he would also provide us with the largest party-switch age differential at 23.05.

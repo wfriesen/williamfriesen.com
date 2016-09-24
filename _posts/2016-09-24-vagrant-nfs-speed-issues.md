@@ -54,4 +54,17 @@ vagrant@vagrant-ubuntu-trusty-64:~$ dd if=/dev/zero of=/home/vagrant/data/output
 
 Much better. This shows roughly a 25-fold improvement.
 
+For sake of comparison, here's the results of the same test running directly on the host machine:
+
+{% highlight bash %}
+william@william-XPS-13-9350 ~/c/williamfriesen.com> dd if=/dev/zero of=/tmp/output bs=8k count=100k
+102400+0 records in
+102400+0 records out
+838860800 bytes (839 MB, 800 MiB) copied, 0.479585 s, 1.7 GB/s
+{% endhighlight %}
+
+And just because I love a good chart, here's a visual representation of these numbers:
+
+![NFS Config Speed Test Results]({{ site.url }}/assets/vagrant-nfs-speed-issues/test-results.svg)
+
 A major wrinkle here is that since we are storing our files within the VM now, they will not be available on the host while the VM is powered off. This may be a deal-breaker, but for a quick-and-dirty fix for your vagrant NFS woes, this is something to consider.

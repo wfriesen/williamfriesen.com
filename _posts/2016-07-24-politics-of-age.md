@@ -13,7 +13,7 @@ This could be determined by a quick Googling, but since I primarily develop agai
 
 So, let's start by creating a table to hold our data.
 
-```sql
+{% highlight sql %}
 CREATE TABLE presage (
   op INTEGER PRIMARY KEY
 , name VARCHAR2(100)
@@ -21,14 +21,14 @@ CREATE TABLE presage (
 , age_at_inauguration NUMBER(5, 3)
 , party CHAR(1)
 );
-```
+{% endhighlight %}
 I fully admit that this entire exercise may just be a justification for making that "PresAge" pun in the table name.
 
 We can obtain our data from the [List of Presidents of the United States by age](https://en.wikipedia.org/wiki/List_of_Presidents_of_the_United_States_by_age) on Wikipedia. I didn't include the full list, since president #13 belonged to a party (Whig) that doesn't exist anymore. This still leaves us with ~150 years of Republican/Democrat contests, more than enough to draw some facile conclusions from.
 
 After copying that table into LibreOffice to filter out just the relevant columns, and some regex and multi-cursor business in Atom, we have our sample data. The only thing missing is party affiliation, which is simple enough to add manually.
 
-```sql
+{% highlight sql %}
 INSERT INTO presage (
   op
 , name
@@ -68,13 +68,13 @@ VALUES
 , (42, 'Bill Clinton', 1993, 46.154, 'D')
 , (43, 'George W. Bush', 2001, 54.198, 'R')
 , (44, 'Barack Obama', 2009, 47.169, 'D');
-```
+{% endhighlight %}
 
 Note that I left the ages in an essentially base-365 representation. Since all we're doing with these numbers is comparing them against each other, this will work just fine.
 
 Since we'll be querying twice (once for Democrats succeeding Republicans, and once for Republicans succeeding Democrats), let's create a view that does most of the work.
 
-```sql
+{% highlight sql %}
 CREATE VIEW age_differences AS
   WITH once_and_future_leaders AS (
     SELECT
@@ -107,11 +107,11 @@ CREATE VIEW age_differences AS
     ON p.op = pc.op
   JOIN presage p2
     ON p2.op = pc.succeeded_by
-```
+{% endhighlight %}
 
 At this point I actually missed Oracle. With no support for analytic functions in SQLite, this query required some convoluted joins and grouping in the `once_and_future_leaders` and `successions` views. Using Oracle's `LAG` or `LEAD` functions would have let us write a much simpler query:
 
-```sql
+{% highlight sql %}
 WITH once_and_future_leaders AS (
   SELECT
     p.op
@@ -130,11 +130,11 @@ WITH once_and_future_leaders AS (
   WHERE p.party != p2.party
 )
 ...
-```
+{% endhighlight %}
 
 Anyway, enough jibber jabber, let's run some queries and see what we can see.
 
-```sql
+{% highlight sql %}
 SELECT
   inauguration
 , new_president
@@ -154,7 +154,7 @@ WHERE party = 'R'
 AND new_party = 'D'
 ORDER BY
   op;
-```
+{% endhighlight %}
 
 This gives us the following results for newly elected Republicans.
 
@@ -194,7 +194,7 @@ This does seem to indicate a trend towards older-Republicans/younger-Democrats, 
 
 But what about this coming election? Since I'm only looking at party switches, the Democratic chart will remain the same no matter what the outcome. So let's look at the effect a potential Trump presidency would have.
 
-```sql
+{% highlight sql %}
 INSERT INTO presage (
   op
 , name
@@ -204,7 +204,7 @@ INSERT INTO presage (
 )
 VALUES
   (45, 'Donald Trump', 2017, 70.220, 'R')
-```
+{% endhighlight %}
 
 ![Republicans (and Trump) Succeeding Democrats]({{ site.url }}/assets/politics-of-age/r_after_d_trump.svg)
 

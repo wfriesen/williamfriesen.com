@@ -109,7 +109,7 @@ CREATE VIEW age_differences AS
     ON p2.op = pc.succeeded_by
 {% endhighlight %}
 
-At this point I actually missed Oracle. With no support for analytic functions in SQLite, this query required some convoluted joins and grouping in the `once_and_future_leaders` and `successions` views. Using Oracle's `LAG` or `LEAD` functions would have let us write a much simpler query:
+At this point I actually missed Oracle. With no support for analytic functions in SQLite, this query required some convoluted joins and grouping in the `once_and_future_leaders` and `party_changes` views. Using Oracle's `LAG` or `LEAD` functions would have let us write a much simpler query:
 
 {% highlight sql %}
 WITH once_and_future_leaders AS (
@@ -118,7 +118,7 @@ WITH once_and_future_leaders AS (
   , LEAD(p.op, 1, NULL) OVER (ORDER BY p.op) next_op
   FROM presage p
 )
-, successions AS (
+, party_changes AS (
   SELECT
     p.op
   , p2.op succeeded_by

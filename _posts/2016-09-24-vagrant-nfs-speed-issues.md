@@ -63,6 +63,19 @@ william@william-XPS-13-9350 ~/c/williamfriesen.com> dd if=/dev/zero of=/tmp/outp
 838860800 bytes (839 MB, 800 MiB) copied, 0.479585 s, 1.7 GB/s
 {% endhighlight %}
 
+And here when using a plain old VirtualBox shared folder, with the following config in the `Vagrantfile`:
+
+{% highlight ruby %}
+  config.vm.synced_folder "./data/", "/home/vagrant/data", create: true
+{% endhighlight %}
+
+{% highlight bash %}
+vagrant@vagrant-ubuntu-trusty-64:~$ dd if=/dev/zero of=/home/vagrant/data/output bs=8k count=100k
+102400+0 records in
+102400+0 records out
+838860800 bytes (839 MB) copied, 6.70526 s, 125 MB/s
+{% endhighlight %}
+
 And just because I love a good chart, here's a visual representation of these numbers:
 
 ![NFS Config Speed Test Results]({{ site.url }}/assets/vagrant-nfs-speed-issues/test-results.svg)

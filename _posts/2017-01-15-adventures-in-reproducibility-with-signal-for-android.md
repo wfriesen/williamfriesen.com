@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Adventures in Reproducibility with Signal for Android"
-date:   2017-01-15 19:24:41 +1000
+date:   2017-01-15 19:12:29 +1100
 tags: [signal, android, encryption, docker]
 ---
 

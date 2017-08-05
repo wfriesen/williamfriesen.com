@@ -19,4 +19,4 @@ google_analytics: "UA-103167954-1"
 
 # Build settings
 markdown: kramdown
-exclude: [serve.sh]
+exclude: [serve.sh, ./_config.dev.yml]

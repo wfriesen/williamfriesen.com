@@ -15,15 +15,18 @@ url: "https://williamfriesen.com" # the base hostname & protocol for your site
 github_username:  wfriesen
 future: true
 
-google_analytics: "UA-103167954-1"
+jekyll_analytics:
+  GoogleAnalytics:
+    id: UA-103167954-1
 
 # Build settings
 markdown: kramdown
 exclude: [serve.sh, ./_config.dev.yml]
 
 plugins:
-- jekyll-github-metadata
-- jekyll-mentions
-- jekyll-redirect-from
-- jekyll-sitemap
-- jemoji
+  - jekyll-github-metadata
+  - jekyll-mentions
+  - jekyll-redirect-from
+  - jekyll-sitemap
+  - jemoji
+  - jekyll-analytics

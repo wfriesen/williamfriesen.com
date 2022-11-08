@@ -17,10 +17,6 @@ mastodon_username: tacklingfuel
 mastodon_base_url: https://aus.social/
 future: true
 
-jekyll_analytics:
-  GoogleAnalytics:
-    id: UA-103167954-1
-
 # Build settings
 markdown: kramdown
 exclude: [serve.sh, ./_config.dev.yml]
@@ -31,4 +27,3 @@ plugins:
   - jekyll-redirect-from
   - jekyll-sitemap
   - jemoji
-  - jekyll-analytics

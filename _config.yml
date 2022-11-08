@@ -13,6 +13,8 @@ description: > # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://williamfriesen.com" # the base hostname & protocol for your site
 github_username:  wfriesen
+mastodon_username: tacklingfuel
+mastodon_base_url: https://aus.social/
 future: true
 
 jekyll_analytics:

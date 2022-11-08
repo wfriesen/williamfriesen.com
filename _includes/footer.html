@@ -25,6 +25,12 @@
           </li>
           {% endif %}
 
+          {% if site.mastodon_username %}
+          <li>
+            {% include icon-mastodon.html username=site.mastodon_username base_url=site.mastodon_base_url %}
+          </li>
+          {% endif %}
+
           <li>
             {% include icon-rss.html %}
           </li>
